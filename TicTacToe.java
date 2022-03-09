@@ -9,12 +9,28 @@ public class TicTacToe
         boolean playing = true;
         while (playing)
         {
-            input = getValidCommand(sc, commands);
+            String input = getValidCommand("Where would you like to claim?", sc, commands);
+            System.out.println("Ok, you claim " + input);
         }
     }
 
-    public static String getValidCommand(Scanner sc, String[] commands)
+    public static String getValidCommand(String prompt, Scanner sc, String[] commands)
     {
-        return "";
+        String input = null;
+        boolean invalid = true;
+        while (invalid)
+        {
+		System.out.println(prompt);
+		input = sc.nextLine().toLowerCase();
+        	for (String cmd : commands)
+        	{
+        		if (input.equals(cmd))
+        		{
+        			invalid = false;
+        			break;
+        		}
+        	}
+        }
+        return input;
     }
 }
