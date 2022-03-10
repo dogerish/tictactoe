@@ -6,11 +6,29 @@ public class TicTacToe
     {
         Scanner sc = new Scanner(System.in);
         String[] commands = { "nw", "n", "ne", "w", "c", "e", "sw", "s", "se" };
+        int[][3] board = {
+        	{ 0, 0, 0 },
+        	{ 0, 0, 0 },
+        	{ 0, 0, 0 }
+        }
         boolean playing = true;
         while (playing)
         {
             String input = getValidCommand("Where would you like to claim?", sc, commands);
-            System.out.println("Ok, you claim " + input);
+            boolean row = 2;
+            switch (input.charAt(0))
+            {
+            	case 'n': row = 0;
+            	case 's':
+            		// select north or south directly
+            		if (input.length() == 1)
+            		else if (input.charAt(1) == 'w') // select (north/south)west
+            		else // select (north/south)east
+            		break;
+            	case 'e': break; // select east
+            	case 'w': break; // select west
+            	case 'c': break; // select center
+            }
         }
     }
 
