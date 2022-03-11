@@ -1,6 +1,7 @@
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
 
 public class Board
 {
@@ -8,6 +9,8 @@ public class Board
     public int h;
     final static char USERSYM = 'X', AUTOSYM = 'O', BLANKSYM = ' ';
     public JButton data[][];
+    final static String WINMSG = "You won!", LOSEMSG = "You lost!", TIEMSG = "You tied!";
+
     
     public Board(int w, int h)
     {
@@ -24,9 +27,19 @@ public class Board
 				data[y][x].setBounds(50+x*150, 50+y*150, 100, 100);
 				data[y][x].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if (!claim(XCOPY, YCOPY, USERSYM)) System.out.println("Not claimable.");
-                        else autoClaim();
-					}
+						setAt(XCOPY, YCOPY, USERSYM);
+                        //check for win
+                        String win = winChecker();
+                        // player won, OR bot has nowhere to go (tie), OR bot won
+                        if (win.length() != 0 || !autoClaim() || (win = winChecker()).length() != 0)
+                        {
+                            JOptionPane.showMessageDialog(data[YCOPY][XCOPY], (win.length() == 0) ? TIEMSG : win);
+                            // disable all
+                            for (int y = 0; y < h; y++)
+                                for (int x = 0; x < w; x++)
+                                    data[y][x].setEnabled(false);
+                        }
+                    }
 				});
                 setAt(x, y, BLANKSYM);
             }
@@ -41,17 +54,6 @@ public class Board
     public char getAt(int x, int y)
     {
         return data[y][x].getText().charAt(0);
-    }
-
-    public boolean claim(int x, int y, char c)
-    {
-        // claim it if possible
-        if (x >= 0 && y >= 0 && x < w && y < h && getAt(x, y) == BLANKSYM)
-        {
-            setAt(x, y, c);
-            return true;
-        }
-        return false;
     }
 
     // returns false when nothing was claimable; otherwise false
@@ -70,6 +72,51 @@ public class Board
         i = available[(int) (Math.random() * i)];
         setAt(i % w, i / w, AUTOSYM);
         return true;
+    }
+
+    public String winChecker()
+    {
+        //Checking Columns
+        for (int x = 0; x < w; x++)
+        {
+            int sum = getAt(x, 0) + getAt(x, 1) + getAt(x, 2);
+            switch (sum)
+            {
+            case USERSYM*3:
+                return WINMSG;
+            case AUTOSYM*3:
+                return LOSEMSG;
+            }
+        }
+        //Checking Rows
+        for (int y = 0; y < h; y++)
+        {
+            int sum = getAt(0, y) + getAt(1, y) + getAt(2, y);
+            switch (sum)
+            {
+            case USERSYM*3:
+                return WINMSG;
+            case AUTOSYM*3:
+                return LOSEMSG;
+            }
+        }
+        //Checking Diagonals
+        switch (getAt(0, 0) + getAt(1, 1) + getAt(2, 2))
+        {
+            case USERSYM*3:
+                return WINMSG;
+            case AUTOSYM*3:
+                return LOSEMSG;
+        }
+
+        switch ((((((((((((getAt(2, 0) + getAt(1, 1) + getAt(0, 2)))))))))))))
+        {
+            case USERSYM*3:
+                return WINMSG;
+            case AUTOSYM*3:
+                return LOSEMSG;
+        }
+        return "";
     }
 
 
