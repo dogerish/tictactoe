@@ -6,6 +6,7 @@ public class Board
 {
     public int w;
     public int h;
+    final static char USERSYM = 'X', AUTOSYM = 'O', BLANKSYM = ' ';
     public JButton data[][];
     
     public Board(int w, int h)
@@ -23,11 +24,11 @@ public class Board
 				data[y][x].setBounds(50+x*150, 50+y*150, 100, 100);
 				data[y][x].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if (!claim(XCOPY, YCOPY, 'x')) System.out.println("Not claimable.");
+						if (!claim(XCOPY, YCOPY, USERSYM)) System.out.println("Not claimable.");
                         else autoClaim();
 					}
 				});
-                setAt(x, y, ' ');
+                setAt(x, y, BLANKSYM);
             }
         }
     }
@@ -35,6 +36,7 @@ public class Board
     public void setAt(int x, int y, char c)
     {
         data[y][x].setText(Character.toString(c));
+        if (c != BLANKSYM) data[y][x].setEnabled(false);
     }
     public char getAt(int x, int y)
     {
@@ -44,7 +46,7 @@ public class Board
     public boolean claim(int x, int y, char c)
     {
         // claim it if possible
-        if (x >= 0 && y >= 0 && x < w && y < h && getAt(x, y) == ' ')
+        if (x >= 0 && y >= 0 && x < w && y < h && getAt(x, y) == BLANKSYM)
         {
             setAt(x, y, c);
             return true;
@@ -52,13 +54,22 @@ public class Board
         return false;
     }
 
-    public void autoClaim()
+    // returns false when nothing was claimable; otherwise false
+    public boolean autoClaim()
     {
-        while (!claim(
-            (int) (Math.random() * w),
-            (int) (Math.random() * h),
-            'o'
-        ));
+        // get list of available choices
+        int available[] = new int[h * w];
+        // after this loop, i will be the number of available options
+        // within the loop, i keeps track of what index in available should be written to
+        int i = 0;
+        for (int j = 0; j < w * h; j++)
+            if (getAt(j % w, j / w) == BLANKSYM)
+                available[i++] = j;
+        if (i == 0) return false; // none available
+        // choose random one
+        i = available[(int) (Math.random() * i)];
+        setAt(i % w, i / w, AUTOSYM);
+        return true;
     }
 
 
