@@ -31,9 +31,9 @@ public class Board
                         //check for win
                         String win = winChecker();
                         // player won, OR bot has nowhere to go (tie), OR bot won
-                        if (win.length() != 0 || !autoClaim() || (win = winChecker()).length() != 0)
+                        if (win != TIEMSG || !autoClaim() || (win = winChecker()) != TIEMSG)
                         {
-                            JOptionPane.showMessageDialog(data[YCOPY][XCOPY], (win.length() == 0) ? TIEMSG : win);
+                            JOptionPane.showMessageDialog(data[YCOPY][XCOPY], win);
                             // disable all
                             for (int y = 0; y < h; y++)
                                 for (int x = 0; x < w; x++)
@@ -116,7 +116,7 @@ public class Board
             case AUTOSYM*3:
                 return LOSEMSG;
         }
-        return "";
+        return TIEMSG;
     }
 
 
